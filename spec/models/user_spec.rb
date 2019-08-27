@@ -26,7 +26,12 @@ RSpec.describe User, type: :model do
   	expect(duplicate_user).to_not be_valid
   end
 
-  it 'is not an admin by default' do
-  	binding.pry
+  it 'has one role' do
+  	expect(valid_user).to have_one(:role)
+  end
+
+  it 'has a default role of user' do
+  	user_role = Role.find_by(:name => 'user')
+  	expect(valid_user.role).to eq(user_role)
   end
 end
