@@ -2,36 +2,36 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
 	raw_password = 'test'
-  invalid_user = User.new
-  bad_email = User.new(:email => 'brad.schrag@gmail.c0m')
-  valid_user = User.new(:email => 'brad.schrag@gmail.com', :password => raw_password)
-  duplicate_user = User.new(:email => 'brad.schrag@gmail.com', :password => raw_password)
 
-  it "requires email and password" do
-  	expect(invalid_user).to_not be_valid
-  	expect(valid_user).to be_valid
-  end
+	before(:each) do
+		@user = create(:user)
+		@no_email = build(:user, :email => nil)
+		@bad_email = build(:user, :email => 'brad.schraggmail.com')
+		@duplicate_user = build(:user)
+	end
 
-  it 'requires valid email pattern' do
-  	expect(bad_email).to_not be_valid
-  end
+    it "has a valid factory" do
+    	expect(@user).to be_valid
+    end
 
-  it 'uses secure password' do
-  	expect(valid_user.password_digest).to_not eq(raw_password)
-  end
+	it "requires email and password" do
+		expect(@no_email).to_not be_valid
+	end
 
-  it 'does not allow duplicate emails' do
-  	valid_user.save
+	it 'requires valid email pattern' do
 
-  	expect(duplicate_user).to_not be_valid
-  end
+		expect(@bad_email).to_not be_valid
+	end
 
-  it 'has one role' do
-  	expect(valid_user).to have_one(:role)
-  end
+	it 'uses secure password' do
+		expect(@user.password_digest).to_not eq(raw_password)
+	end
 
-  it 'has a default role of user' do
-  	user_role = Role.find_by(:name => 'user')
-  	expect(valid_user.role).to eq(user_role)
-  end
+	it 'does not allow duplicate emails' do
+		expect(@duplicate_user).to_not be_valid
+	end
+
+	it 'defaults to author role if none given' do
+
+	end
 end
